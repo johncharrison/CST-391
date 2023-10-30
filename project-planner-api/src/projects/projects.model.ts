@@ -9,7 +9,7 @@ export interface Project {
   tasks: Array<Task>;
   start_date: Date;
   due_date: Date;
-  status_id: Status | number;
+  status: Status | number;
   created_date: Date;
   modified_date: Date;
 }

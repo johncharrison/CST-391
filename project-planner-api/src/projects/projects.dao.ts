@@ -26,7 +26,7 @@ export const createProject = async (project: Project) => {
     project.url_location,
     project.start_date,
     project.due_date,
-    project.status_id,
+    project.status,
   ]);
 };
 
@@ -37,7 +37,7 @@ export const updateProject = async (project: Project) => {
     project.url_location,
     project.start_date,
     project.due_date,
-    project.status_id,
+    project.status,
     project.projectId,
   ]);
 };

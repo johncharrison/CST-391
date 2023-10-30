@@ -26,7 +26,7 @@ CREATE TABLE `project` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `description` text,
-  `url_location` varchar(255) NOT NULL,
+  `url_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `due_date` date DEFAULT NULL,
   `created_date` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -37,19 +37,8 @@ CREATE TABLE `project` (
   CONSTRAINT `project_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
-DROP TABLE IF EXISTS `project_task`;
-CREATE TABLE `project_task` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `project_id` bigint unsigned NOT NULL,
-  `task_id` bigint unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `project_id` (`project_id`),
-  KEY `task_id` (`task_id`),
-  CONSTRAINT `project_task_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `project_task_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+INSERT INTO `project` (`id`, `title`, `description`, `url_location`, `start_date`, `due_date`, `created_date`, `modified_date`, `status_id`) VALUES
+(1,	'Project 1',	'Something goes here',	'http://127.0.0.1:3000/',	NULL,	NULL,	'2023-10-30 15:41:54',	'2023-10-30 15:41:54',	1);
 
 DROP TABLE IF EXISTS `status`;
 CREATE TABLE `status` (
@@ -72,6 +61,9 @@ CREATE TABLE `tag` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO `tag` (`id`, `title`, `color`) VALUES
+(1,	'Tag 1',	'#BC55FA'),
+(2,	'Tag 2',	'#000000');
 
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
@@ -83,13 +75,18 @@ CREATE TABLE `task` (
   `modified_date` datetime NOT NULL,
   `status_id` int unsigned DEFAULT NULL,
   `priority_id` int unsigned DEFAULT NULL,
+  `project_id` bigint unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `status_id` (`status_id`),
   KEY `priority_id` (`priority_id`),
+  KEY `project_id` (`project_id`),
   CONSTRAINT `task_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `task_ibfk_3` FOREIGN KEY (`priority_id`) REFERENCES `priority` (`id`) ON DELETE SET NULL
+  CONSTRAINT `task_ibfk_3` FOREIGN KEY (`priority_id`) REFERENCES `priority` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `task_ibfk_4` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO `task` (`id`, `title`, `description`, `due_date`, `created_date`, `modified_date`, `status_id`, `priority_id`, `project_id`) VALUES
+(2,	'Task 1',	'Some task description',	'2023-10-30',	'2023-10-30 17:54:40',	'2023-10-30 17:54:40',	2,	2,	1);
 
 DROP TABLE IF EXISTS `task_tag`;
 CREATE TABLE `task_tag` (
@@ -99,9 +96,9 @@ CREATE TABLE `task_tag` (
   PRIMARY KEY (`id`),
   KEY `task_id` (`task_id`),
   KEY `tag_id` (`tag_id`),
-  CONSTRAINT `task_tag_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `task_tag_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`) ON DELETE SET NULL
+  CONSTRAINT `task_tag_ibfk_3` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `task_tag_ibfk_5` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2023-10-30 01:49:18
+-- 2023-10-30 18:30:52

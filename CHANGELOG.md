@@ -9,3 +9,7 @@ Initial API for:
 - Status
 - Tag
 - Priority
+
+**Commit date**: _30 Oct 2023_
+
+Added more routes and added more request handlers in the controllers.
